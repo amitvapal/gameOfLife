@@ -55,9 +55,11 @@ export default function RingChart({
           y="50%"
           textAnchor="middle"
           dominantBaseline="central"
-          fontFamily="Georgia, 'Times New Roman', serif"
-          fontStyle="italic"
-          fontSize={size * 0.22}
+          fontFamily="Inter, system-ui, sans-serif"
+          fontStyle="normal"
+          fontWeight="500"
+          fontSize={size * 0.24}
+          letterSpacing="-0.02em"
           fill="var(--text)"
         >
           {pct}%

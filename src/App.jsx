@@ -32,6 +32,7 @@ export default function App() {
         <div className="sidebar__footer">
           <StreakCounter />
           <RankBadge />
+          <img src="/sidebar-art.webp" alt="" className="sidebar-art" aria-hidden="true" />
         </div>
       </aside>
       <main className="main">
