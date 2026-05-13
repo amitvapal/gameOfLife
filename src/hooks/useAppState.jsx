@@ -17,12 +17,106 @@ const initialState = {
   dailyLogs: {},
 };
 
+const NEXT_STATUS = {
+  not_started: 'in_progress',
+  in_progress: 'done',
+  done: 'not_started',
+};
+
+function mapGoal(state, goalId, fn) {
+  return {
+    ...state,
+    goals: state.goals.map((g) => (g.id === goalId ? fn(g) : g)),
+  };
+}
+
+function mapSubgoal(state, goalId, subgoalId, fn) {
+  return mapGoal(state, goalId, (g) => ({
+    ...g,
+    subgoals: g.subgoals.map((s) => (s.id === subgoalId ? fn(s) : s)),
+  }));
+}
+
 function reducer(state, action) {
   switch (action.type) {
     case 'LOAD_STATE':
       return { ...initialState, ...action.payload };
     case 'RESET_STATE':
       return { ...initialState, createdAt: new Date().toISOString() };
+
+    case 'ADD_GOAL':
+      return { ...state, goals: [...state.goals, action.payload] };
+
+    case 'UPDATE_GOAL': {
+      const { id, changes } = action.payload;
+      return mapGoal(state, id, (g) => ({ ...g, ...changes }));
+    }
+
+    case 'DELETE_GOAL':
+      return {
+        ...state,
+        goals: state.goals.filter((g) => g.id !== action.payload),
+      };
+
+    case 'ADD_SUBGOAL': {
+      const { goalId, subgoal } = action.payload;
+      return mapGoal(state, goalId, (g) => ({
+        ...g,
+        subgoals: [...g.subgoals, subgoal],
+      }));
+    }
+
+    case 'UPDATE_SUBGOAL': {
+      const { goalId, subgoalId, changes } = action.payload;
+      return mapSubgoal(state, goalId, subgoalId, (s) => ({ ...s, ...changes }));
+    }
+
+    case 'DELETE_SUBGOAL': {
+      const { goalId, subgoalId } = action.payload;
+      return mapGoal(state, goalId, (g) => ({
+        ...g,
+        subgoals: g.subgoals
+          .filter((s) => s.id !== subgoalId)
+          .map((s, i) => ({ ...s, orderIndex: i })),
+      }));
+    }
+
+    case 'CYCLE_SUBGOAL_STATUS': {
+      const { goalId, subgoalId } = action.payload;
+      return mapSubgoal(state, goalId, subgoalId, (s) => ({
+        ...s,
+        status: NEXT_STATUS[s.status] || 'in_progress',
+      }));
+    }
+
+    case 'REORDER_SUBGOALS': {
+      const { goalId, orderedIds } = action.payload;
+      return mapGoal(state, goalId, (g) => {
+        const byId = new Map(g.subgoals.map((s) => [s.id, s]));
+        const next = orderedIds
+          .map((id, i) => {
+            const sg = byId.get(id);
+            return sg ? { ...sg, orderIndex: i } : null;
+          })
+          .filter(Boolean);
+        return { ...g, subgoals: next };
+      });
+    }
+
+    case 'TOGGLE_PIN_GOAL':
+      return mapGoal(state, action.payload, (g) => ({
+        ...g,
+        pinnedToDashboard: !g.pinnedToDashboard,
+      }));
+
+    case 'TOGGLE_PIN_SUBGOAL': {
+      const { goalId, subgoalId } = action.payload;
+      return mapSubgoal(state, goalId, subgoalId, (s) => ({
+        ...s,
+        pinnedToDashboard: !s.pinnedToDashboard,
+      }));
+    }
+
     default:
       return state;
   }
