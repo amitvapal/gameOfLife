@@ -808,3 +808,149 @@ button {
   justify-content: flex-end;
   margin-top: 4px;
 }
+
+/* --- fitness --- */
+.form__row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.form__row .field {
+  flex: 1;
+  min-width: 160px;
+}
+
+.fitness-setup {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 560px;
+}
+
+.fitness-setup__title {
+  margin-top: 0;
+  font-size: 20px;
+}
+
+.fitness__section {
+  margin-top: 32px;
+}
+
+.inline-form {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: stretch;
+  margin-bottom: 12px;
+}
+
+.macro-form .input--narrow {
+  max-width: 80px;
+}
+
+.log-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.log-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.log-row__date {
+  color: var(--text-muted);
+  font-size: 13px;
+  min-width: 100px;
+}
+
+.log-row__value {
+  color: var(--text);
+  font-weight: 500;
+  flex: 1;
+}
+
+.log-row--macros .log-row__value {
+  flex: 0 0 auto;
+  min-width: 80px;
+}
+
+.log-row__sub {
+  color: var(--text-muted);
+  font-size: 13px;
+  flex: 1;
+}
+
+/* --- stats tiles --- */
+.stats__tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.tile {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tile__label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+.tile__value {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 24px;
+  color: var(--text);
+}
+
+.tile__sub {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.stats__progress {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.stats__progress-bar {
+  height: 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.stats__progress-fill {
+  height: 100%;
+  background: var(--accent);
+  transition: width 200ms ease;
+}
+
+.stats__progress-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-align: right;
+}
