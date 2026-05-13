@@ -23,6 +23,21 @@ const NEXT_STATUS = {
   done: 'not_started',
 };
 
+const emptyDailyLog = () => ({
+  tasks: [],
+  sleep: null,
+  rating: null,
+  reflection: '',
+});
+
+function updateDailyLog(state, date, fn) {
+  const current = state.dailyLogs[date] || emptyDailyLog();
+  return {
+    ...state,
+    dailyLogs: { ...state.dailyLogs, [date]: fn(current) },
+  };
+}
+
 function mapGoal(state, goalId, fn) {
   return {
     ...state,
@@ -115,6 +130,64 @@ function reducer(state, action) {
         ...s,
         pinnedToDashboard: !s.pinnedToDashboard,
       }));
+    }
+
+    case 'INIT_DAILY_LOG': {
+      const { date } = action.payload;
+      if (state.dailyLogs[date]) return state;
+      return {
+        ...state,
+        dailyLogs: { ...state.dailyLogs, [date]: emptyDailyLog() },
+      };
+    }
+
+    case 'ADD_TASK': {
+      const { date, task } = action.payload;
+      return updateDailyLog(state, date, (log) => ({
+        ...log,
+        tasks: [...log.tasks, task],
+      }));
+    }
+
+    case 'UPDATE_TASK': {
+      const { date, taskId, changes } = action.payload;
+      return updateDailyLog(state, date, (log) => ({
+        ...log,
+        tasks: log.tasks.map((t) => (t.id === taskId ? { ...t, ...changes } : t)),
+      }));
+    }
+
+    case 'DELETE_TASK': {
+      const { date, taskId } = action.payload;
+      return updateDailyLog(state, date, (log) => ({
+        ...log,
+        tasks: log.tasks.filter((t) => t.id !== taskId),
+      }));
+    }
+
+    case 'TOGGLE_TASK_COMPLETE': {
+      const { date, taskId } = action.payload;
+      return updateDailyLog(state, date, (log) => ({
+        ...log,
+        tasks: log.tasks.map((t) =>
+          t.id === taskId ? { ...t, completed: !t.completed } : t
+        ),
+      }));
+    }
+
+    case 'SET_SLEEP': {
+      const { date, sleep } = action.payload;
+      return updateDailyLog(state, date, (log) => ({ ...log, sleep }));
+    }
+
+    case 'SET_RATING': {
+      const { date, rating } = action.payload;
+      return updateDailyLog(state, date, (log) => ({ ...log, rating }));
+    }
+
+    case 'SET_REFLECTION': {
+      const { date, reflection } = action.payload;
+      return updateDailyLog(state, date, (log) => ({ ...log, reflection }));
     }
 
     default:
