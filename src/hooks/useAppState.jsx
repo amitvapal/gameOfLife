@@ -15,6 +15,7 @@ const initialState = {
   goals: [],
   fitness: null,
   dailyLogs: {},
+  lastSeenRank: null,
 };
 
 const NEXT_STATUS = {
@@ -263,6 +264,9 @@ function reducer(state, action) {
         },
       };
     }
+
+    case 'ACK_RANK':
+      return { ...state, lastSeenRank: action.payload };
 
     default:
       return state;

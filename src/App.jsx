@@ -1,4 +1,7 @@
 import { NavLink, Outlet } from 'react-router-dom';
+import RankBadge from './components/RankBadge.jsx';
+import StreakCounter from './components/StreakCounter.jsx';
+import RankUpOverlay from './components/RankUpOverlay.jsx';
 
 const links = [
   { to: '/', label: 'Today', end: true },
@@ -26,10 +29,15 @@ export default function App() {
             </NavLink>
           ))}
         </nav>
+        <div className="sidebar__footer">
+          <StreakCounter />
+          <RankBadge />
+        </div>
       </aside>
       <main className="main">
         <Outlet />
       </main>
+      <RankUpOverlay />
     </div>
   );
 }
