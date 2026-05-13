@@ -954,3 +954,125 @@ button {
   color: var(--text-muted);
   text-align: right;
 }
+
+/* --- dashboard --- */
+.dashboard__section {
+  margin-bottom: 40px;
+}
+
+.dashboard__heading {
+  font-family: var(--font-sans);
+  font-style: normal;
+  font-weight: 500;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin: 0 0 16px;
+}
+
+.ring-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.ring {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  max-width: 180px;
+}
+
+.ring__svg {
+  display: block;
+}
+
+.ring__progress {
+  transition: stroke-dashoffset 600ms ease-out;
+}
+
+.ring__label {
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--text);
+  text-align: center;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.ring__sublabel {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.ring-button {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  padding: 8px;
+  cursor: pointer;
+  color: inherit;
+  font-family: inherit;
+  transition: border-color 120ms ease, background 120ms ease, transform 120ms ease;
+}
+
+.ring-button:hover {
+  border-color: var(--border);
+  background: var(--surface);
+}
+
+.ring-button:active {
+  transform: scale(0.98);
+}
+
+.fitness-ring {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.fitness-ring__stats {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.fitness-ring__stats p {
+  margin: 0;
+}
+
+.fitness-ring__stats strong {
+  color: var(--text);
+  font-weight: 500;
+}
+
+/* --- goal-card highlight --- */
+.goal-card--highlight {
+  animation: goal-highlight 1.8s ease-out;
+  border-color: var(--accent);
+}
+
+@keyframes goal-highlight {
+  0% {
+    box-shadow: 0 0 0 0 rgba(229, 229, 229, 0.4);
+    border-color: var(--accent);
+  }
+  60% {
+    box-shadow: 0 0 0 6px rgba(229, 229, 229, 0);
+    border-color: var(--accent);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(229, 229, 229, 0);
+    border-color: var(--border);
+  }
+}
