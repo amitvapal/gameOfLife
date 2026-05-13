@@ -1,3 +1,70 @@
+import { formatDate } from './dates.js';
+
+export const RANKS = [
+  { name: 'Rookie', min: 0, max: 13 },
+  { name: 'Contender', min: 14, max: 41 },
+  { name: 'Operator', min: 42, max: 90 },
+  { name: 'Elite', min: 91, max: 180 },
+  { name: 'Legend', min: 181, max: Infinity },
+];
+
+export function currentRank(daysLogged) {
+  return RANKS.find((r) => daysLogged >= r.min && daysLogged <= r.max);
+}
+
+export function nextRank(daysLogged) {
+  const i = RANKS.findIndex(
+    (r) => daysLogged >= r.min && daysLogged <= r.max
+  );
+  return i >= 0 && i < RANKS.length - 1 ? RANKS[i + 1] : null;
+}
+
+export function progressToNextRank(daysLogged) {
+  const cur = currentRank(daysLogged);
+  const next = nextRank(daysLogged);
+  if (!next || !cur) return 1;
+  const span = next.min - cur.min;
+  if (span <= 0) return 1;
+  return Math.min(1, Math.max(0, (daysLogged - cur.min) / span));
+}
+
+function dayHasData(log) {
+  if (!log) return false;
+  const hasTaskCompleted = log.tasks?.some((t) => t.completed);
+  const hasRating = log.rating != null;
+  const hasReflection =
+    log.reflection && log.reflection.trim().length > 0;
+  return Boolean(hasTaskCompleted || hasRating || hasReflection);
+}
+
+export function daysLogged(state) {
+  let count = 0;
+  for (const date in state.dailyLogs) {
+    if (dayHasData(state.dailyLogs[date])) count++;
+  }
+  return count;
+}
+
+export function currentStreak(state) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const has = (d) => dayHasData(state.dailyLogs[formatDate(d)]);
+
+  let cursor = new Date(today);
+  if (!has(cursor)) {
+    cursor.setDate(cursor.getDate() - 1);
+    if (!has(cursor)) return 0;
+  }
+
+  let streak = 0;
+  while (has(cursor)) {
+    streak++;
+    cursor.setDate(cursor.getDate() - 1);
+  }
+  return streak;
+}
+
 export function sumHoursForGoal(state, goalId) {
   let total = 0;
   for (const date in state.dailyLogs) {
