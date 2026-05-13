@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useAppState } from '../hooks/useAppState.jsx';
 import GoalCard from '../components/GoalCard.jsx';
 import GoalFormModal from '../components/GoalFormModal.jsx';
@@ -6,6 +7,21 @@ import GoalFormModal from '../components/GoalFormModal.jsx';
 export default function Goals() {
   const { state, dispatch } = useAppState();
   const [modal, setModal] = useState({ open: false, editing: null });
+  const [searchParams, setSearchParams] = useSearchParams();
+  const focusId = searchParams.get('focus');
+  const [highlightId, setHighlightId] = useState(null);
+
+  useEffect(() => {
+    if (!focusId) return;
+    setHighlightId(focusId);
+    const el = document.querySelector(`[data-goal-id="${focusId}"]`);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const t = setTimeout(() => {
+      setHighlightId(null);
+      setSearchParams({}, { replace: true });
+    }, 1800);
+    return () => clearTimeout(t);
+  }, [focusId, setSearchParams]);
 
   function openNew() {
     setModal({ open: true, editing: null });
@@ -59,7 +75,12 @@ export default function Goals() {
       ) : (
         <div className="goal-list">
           {state.goals.map((g) => (
-            <GoalCard key={g.id} goal={g} onEdit={() => openEdit(g)} />
+            <GoalCard
+              key={g.id}
+              goal={g}
+              onEdit={() => openEdit(g)}
+              highlighted={highlightId === g.id}
+            />
           ))}
         </div>
       )}

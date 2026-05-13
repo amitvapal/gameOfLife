@@ -9,7 +9,7 @@ function formatDeadline(d) {
   return d;
 }
 
-export default function GoalCard({ goal, onEdit }) {
+export default function GoalCard({ goal, onEdit, highlighted = false }) {
   const { dispatch } = useAppState();
   const [expanded, setExpanded] = useState(true);
   const [subgoalModal, setSubgoalModal] = useState({ open: false, editing: null });
@@ -82,7 +82,10 @@ export default function GoalCard({ goal, onEdit }) {
   }
 
   return (
-    <article className="goal-card">
+    <article
+      className={'goal-card' + (highlighted ? ' goal-card--highlight' : '')}
+      data-goal-id={goal.id}
+    >
       <header className="goal-card__header">
         <button
           type="button"

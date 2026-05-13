@@ -48,6 +48,25 @@ export function dailyDeficitNeeded(fitness) {
   return totalDeficitNeeded(fitness) / days;
 }
 
+export function goalProgress(state, goalId) {
+  const goal = state.goals.find((g) => g.id === goalId);
+  if (!goal || !goal.totalHoursEstimate) return 0;
+  return Math.min(1, sumHoursForGoal(state, goalId) / goal.totalHoursEstimate);
+}
+
+export function subgoalProgress(state, subgoalId) {
+  let sg = null;
+  for (const g of state.goals) {
+    const found = g.subgoals.find((s) => s.id === subgoalId);
+    if (found) {
+      sg = found;
+      break;
+    }
+  }
+  if (!sg || !sg.hoursEstimate) return 0;
+  return Math.min(1, sumHoursForSubgoal(state, subgoalId) / sg.hoursEstimate);
+}
+
 export function latestWeighIn(fitness) {
   if (!fitness.weighIns.length) return null;
   return [...fitness.weighIns].sort((a, b) =>
