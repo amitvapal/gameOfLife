@@ -190,6 +190,80 @@ function reducer(state, action) {
       return updateDailyLog(state, date, (log) => ({ ...log, reflection }));
     }
 
+    case 'INIT_FITNESS': {
+      return {
+        ...state,
+        fitness: {
+          startWeight: action.payload.startWeight,
+          goalWeight: action.payload.goalWeight,
+          startDate: action.payload.startDate,
+          targetDate: action.payload.targetDate ?? null,
+          dailyCalorieTarget: action.payload.dailyCalorieTarget,
+          weighIns: [],
+          dailyLogs: [],
+        },
+      };
+    }
+
+    case 'UPDATE_FITNESS_TARGETS': {
+      if (!state.fitness) return state;
+      return {
+        ...state,
+        fitness: { ...state.fitness, ...action.payload },
+      };
+    }
+
+    case 'ADD_WEIGHIN': {
+      if (!state.fitness) return state;
+      return {
+        ...state,
+        fitness: {
+          ...state.fitness,
+          weighIns: [...state.fitness.weighIns, action.payload],
+        },
+      };
+    }
+
+    case 'DELETE_WEIGHIN': {
+      if (!state.fitness) return state;
+      return {
+        ...state,
+        fitness: {
+          ...state.fitness,
+          weighIns: state.fitness.weighIns.filter(
+            (_, i) => i !== action.payload
+          ),
+        },
+      };
+    }
+
+    case 'LOG_MACROS': {
+      if (!state.fitness) return state;
+      const entry = action.payload;
+      const i = state.fitness.dailyLogs.findIndex((l) => l.date === entry.date);
+      const dailyLogs =
+        i >= 0
+          ? state.fitness.dailyLogs.map((l, idx) => (idx === i ? entry : l))
+          : [...state.fitness.dailyLogs, entry];
+      return {
+        ...state,
+        fitness: { ...state.fitness, dailyLogs },
+      };
+    }
+
+    case 'DELETE_MACRO_LOG': {
+      if (!state.fitness) return state;
+      return {
+        ...state,
+        fitness: {
+          ...state.fitness,
+          dailyLogs: state.fitness.dailyLogs.filter(
+            (l) => l.date !== action.payload
+          ),
+        },
+      };
+    }
+
     default:
       return state;
   }
